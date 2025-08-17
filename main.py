@@ -2,19 +2,20 @@ import time
 import csv
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.firefox.options import Options
+from webdriver_manager.firefox import GeckoDriverManager
 
+# Настройка Selenium для Firefox
 options = Options()
-options.add_argument("--headless")
-options.add_argument("--disable-blink-features=AutomationControlled")
+options.add_argument("--headless")  # запуск без окна браузера (убрать, если нужно видеть процесс)
 
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()), options=options)
 
 url = "https://www.divan.ru/category/sad-i-dacha"
 driver.get(url)
-time.sleep(5)
+time.sleep(5)  # ждем загрузку страницы
+
 
 last_height = driver.execute_script("return document.body.scrollHeight")
 while True:
@@ -44,10 +45,11 @@ for product in products:
 
     data.append([name, price, link])
 
-with open("divan_products.csv", "w", newline="", encoding="utf-8") as file:
+with open("divan_products_firefox.csv", "w", newline="", encoding="utf-8") as file:
     writer = csv.writer(file, delimiter=";")
     writer.writerow(["Название", "Цена", "Ссылка"])
     writer.writerows(data)
 
 driver.quit()
-print("Данные сохранены в divan_products.csv")
+print("Данные сохранены в divan_products_firefox.csv")
+
